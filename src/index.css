@@ -1,0 +1,44 @@
+:root {
+  --ink: #18333a;
+  --sky: #d9f8ff;
+  --grass: #dff4c3;
+  --sun: #ffe082;
+
+  font: 18px/1.45 'Trebuchet MS', Verdana, sans-serif;
+  letter-spacing: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 224, 130, 0.7), transparent 18rem),
+    linear-gradient(180deg, var(--sky) 0%, #ecfbff 54%, var(--grass) 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100svh;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+h1 {
+  margin: 0;
+  color: #153746;
+  font-size: clamp(2.2rem, 7vw, 4.9rem);
+  line-height: 0.96;
+}
+
+p {
+  margin: 0;
+}
