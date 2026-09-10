@@ -107,9 +107,45 @@
 }
 
 .map-stage {
+  position: relative;
   min-height: 0;
   display: grid;
   place-items: center;
+}
+
+.zoom-controls {
+  position: absolute;
+  right: 28px;
+  bottom: 28px;
+  z-index: 3;
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+  border: 3px solid #ffffff;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 8px 18px rgba(42, 76, 62, 0.12);
+}
+
+.zoom-controls button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  color: #385151;
+  background: transparent;
+  cursor: pointer;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.zoom-controls button:hover,
+.zoom-controls button:focus-visible {
+  border-color: #18333a;
+  outline: none;
+  background: #ffffff;
 }
 
 .world-map {
@@ -124,6 +160,15 @@
   stroke-width: 5;
 }
 
+.country-focused .ocean,
+.country-focused .continent-shape {
+  filter: blur(2px) saturate(0.72);
+  opacity: 0.5;
+  transition:
+    filter 300ms ease,
+    opacity 300ms ease;
+}
+
 .continent-group {
   transform-box: fill-box;
   transform-origin: center;
@@ -133,7 +178,9 @@
   cursor: pointer;
   outline: none;
   stroke: #ffffff;
-  stroke-width: 1.5;
+  stroke: rgba(255, 255, 255, 0.7);
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
   stroke-linejoin: round;
   fill-opacity: 0.9;
   transition:
@@ -142,11 +189,6 @@
     transform 180ms ease;
   transform-box: fill-box;
   transform-origin: center;
-}
-
-.fidelity-high .continent-shape {
-  stroke-width: 4;
-  stroke-linejoin: miter;
 }
 
 .continent-shape:hover,
@@ -163,6 +205,19 @@
 .continent-shape.selected {
   animation: happy-pop 520ms ease;
   filter: saturate(1.2) drop-shadow(0 14px 16px rgba(26, 68, 78, 0.25));
+}
+
+.country-focus {
+  pointer-events: none;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: translate(var(--country-x, 0px), var(--country-y, 0px)) scale(var(--country-scale, 1.1));
+  filter: saturate(1.2) drop-shadow(0 14px 16px rgba(26, 68, 78, 0.25));
+  stroke: #ffffff;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .continent-glow {
@@ -235,6 +290,11 @@
   .mode-switcher {
     top: 12px;
     left: 12px;
+  }
+
+  .zoom-controls {
+    right: 12px;
+    bottom: 12px;
   }
 
   .language-button {

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import { WorldMap, type MapMode } from './components/WorldMap'
 import { continents, type Continent } from './data/continents'
-import { type Language, playContinentName, playCountryName } from './lib/audio'
+import { type Language, playContinentName, playCountryName, playModeName } from './lib/audio'
 
 const copy = {
   ro: { switchLabel: 'Alege limba', mapMode: 'Alege ce invatam', continents: 'Continente', countries: 'Tari' },
@@ -29,8 +29,22 @@ function App() {
   }
 
   const handleCountrySelect = (countryKey: string, name: string) => {
+    if (selectedCountryKey) {
+      setSelectedCountryKey(undefined)
+      return
+    }
+
     setSelectedCountryKey(countryKey)
     playCountryName(name, language)
+  }
+
+  const handleCountryClear = () => {
+    setSelectedCountryKey(undefined)
+  }
+
+  const handleModeChange = (nextMode: MapMode) => {
+    setMode(nextMode)
+    playModeName(nextMode === 'continents' ? currentCopy.continents : currentCopy.countries, language)
   }
 
   return (
@@ -66,10 +80,10 @@ function App() {
       </div>
 
       <div className="mode-switcher" role="group" aria-label={currentCopy.mapMode}>
-        <button className={mode === 'continents' ? 'mode-button active' : 'mode-button'} type="button" aria-pressed={mode === 'continents'} onClick={() => setMode('continents')}>
+        <button className={mode === 'continents' ? 'mode-button active' : 'mode-button'} type="button" aria-pressed={mode === 'continents'} onClick={() => handleModeChange('continents')}>
           {currentCopy.continents}
         </button>
-        <button className={mode === 'countries' ? 'mode-button active' : 'mode-button'} type="button" aria-pressed={mode === 'countries'} onClick={() => setMode('countries')}>
+        <button className={mode === 'countries' ? 'mode-button active' : 'mode-button'} type="button" aria-pressed={mode === 'countries'} onClick={() => handleModeChange('countries')}>
           {currentCopy.countries}
         </button>
       </div>
@@ -81,6 +95,7 @@ function App() {
         language={language}
         onSelect={handleContinentSelect}
         onSelectCountry={handleCountrySelect}
+        onClearCountry={handleCountryClear}
       />
     </main>
   )

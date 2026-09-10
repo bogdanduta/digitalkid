@@ -35,3 +35,7 @@ export const playContinentName = async (continent: Continent, language: Language
 export const playCountryName = (name: string, language: Language) => {
   speakWithBrowserVoice(name, language)
 }
+
+export const playModeName = (name: string, language: Language) => {
+  speakWithBrowserVoice(name, language)
+}
