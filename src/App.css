@@ -52,8 +52,8 @@
 
 .mode-switcher {
   position: absolute;
-  right: 28px;
-  bottom: 28px;
+  top: 28px;
+  left: 28px;
   z-index: 2;
   display: flex;
   gap: 6px;
@@ -233,8 +233,8 @@
   }
 
   .mode-switcher {
-    right: 12px;
-    bottom: 12px;
+    top: 12px;
+    left: 12px;
   }
 
   .language-button {
