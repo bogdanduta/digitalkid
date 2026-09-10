@@ -98,6 +98,7 @@
 
 .continent-shape {
   cursor: pointer;
+  outline: none;
   stroke: #ffffff;
   stroke-width: 8;
   stroke-linejoin: round;
@@ -117,7 +118,7 @@
 }
 
 .continent-shape:focus-visible {
-  stroke: #132f3c;
+  outline: none;
 }
 
 .continent-group.selected .continent-shape {
