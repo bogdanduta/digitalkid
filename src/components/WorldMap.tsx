@@ -1,51 +1,56 @@
 import { continents, type Continent, type ContinentId } from '../data/continents'
 import type { Language } from '../lib/audio'
+import { geoCentroid, geoNaturalEarth1, geoPath } from 'd3-geo'
+import { feature } from 'topojson-client'
+import type { GeometryCollection, Topology } from 'topojson-specification'
+import countries from 'i18n-iso-countries'
+import countriesTopology from 'world-atlas/countries-110m.json'
+
+const countriesTopologyData = countriesTopology as unknown as Topology<{ countries: GeometryCollection }>
+const countriesFeature = feature(countriesTopologyData, countriesTopologyData.objects.countries)
+const projection = geoNaturalEarth1().fitSize([830, 540], countriesFeature)
+const projectedPath = geoPath(projection)
 
 type WorldMapProps = {
   selectedId: ContinentId
+  selectedCountryKey?: string
+  mode: MapMode
   language: Language
   onSelect: (continent: Continent) => void
+  onSelectCountry: (countryKey: string, name: string) => void
 }
 
-type Shape = {
-  id: ContinentId
-  d: string
+const classifyContinent = (country: typeof countriesFeature.features[number]): ContinentId => {
+  const [longitude, latitude] = geoCentroid(country)
+
+  if (latitude < -55) return 'antarctica'
+  if (longitude > 130 && latitude < -8) return 'australia'
+  if (longitude < -30 && latitude < 18 && latitude > -56) return 'south-america'
+  if (longitude < -25 && latitude >= 18) return 'north-america'
+  if (longitude >= -25 && longitude <= 55 && latitude > -35 && latitude < 38) return 'africa'
+  if (longitude >= -25 && longitude <= 65 && latitude >= 35) return 'europe'
+  return 'asia'
 }
 
-const shapes: Shape[] = [
-  {
-    id: 'north-america',
-    d: 'M104 162 C78 134 88 91 136 72 C183 51 243 61 272 96 C296 125 281 158 251 170 C222 181 212 205 187 218 C153 235 124 210 104 162 Z',
-  },
-  {
-    id: 'south-america',
-    d: 'M260 276 C292 266 329 288 333 326 C337 365 314 406 288 445 C264 482 243 501 228 485 C210 466 222 425 207 392 C192 359 211 298 260 276 Z',
-  },
-  {
-    id: 'europe',
-    d: 'M403 133 C433 108 486 109 511 139 C531 163 517 190 483 196 C449 202 405 197 386 174 C375 158 383 144 403 133 Z',
-  },
-  {
-    id: 'africa',
-    d: 'M430 222 C464 196 523 205 548 247 C574 291 558 361 523 406 C494 443 462 433 445 392 C430 357 393 325 399 285 C403 258 411 238 430 222 Z',
-  },
-  {
-    id: 'asia',
-    d: 'M530 120 C591 83 699 95 751 142 C803 190 782 257 719 270 C667 281 633 251 591 267 C556 280 523 260 513 228 C504 198 498 143 530 120 Z',
-  },
-  {
-    id: 'australia',
-    d: 'M690 355 C727 336 783 347 801 382 C816 411 782 439 737 438 C693 437 657 411 665 383 C668 371 677 362 690 355 Z',
-  },
-  {
-    id: 'antarctica',
-    d: 'M138 515 C236 489 362 499 448 510 C548 523 678 490 787 519 C818 527 813 559 773 568 C603 604 398 600 187 573 C132 566 95 541 138 515 Z',
-  },
-]
+const projectedCountries = countriesFeature.features.map((country, index) => ({
+  key: `${country.id ?? 'country'}-${index}`,
+  numericId: String(country.id ?? ''),
+  continentId: classifyContinent(country),
+  path: projectedPath(country) ?? '',
+}))
 
-const getContinent = (id: ContinentId) => continents.find((continent) => continent.id === id)!
+const languageLocales: Record<Language, string> = { ro: 'ro-RO', en: 'en-US', es: 'es-ES' }
 
-export function WorldMap({ selectedId, language, onSelect }: WorldMapProps) {
+const getCountryName = (numericId: string, language: Language) => {
+  const alpha2 = countries.numericToAlpha2(numericId)
+  if (!alpha2) return 'Unknown country'
+
+  return new Intl.DisplayNames([languageLocales[language]], { type: 'region' }).of(alpha2) ?? 'Unknown country'
+}
+
+export type MapMode = 'continents' | 'countries'
+
+export function WorldMap({ selectedId, selectedCountryKey, mode, language, onSelect, onSelectCountry }: WorldMapProps) {
   const mapCopy = language === 'ro'
     ? { label: 'Harta lumii cu continente', title: 'Harta lumii', description: 'Atinge un continent pentru a auzi numele lui in romana.' }
     : language === 'en'
@@ -54,35 +59,36 @@ export function WorldMap({ selectedId, language, onSelect }: WorldMapProps) {
 
   return (
     <section className="map-stage" aria-label={mapCopy.label}>
-      <svg className="world-map" viewBox="0 0 900 620" role="img" aria-labelledby="map-title map-desc">
+      <svg className="world-map fidelity-high" viewBox="0 0 900 620" role="img" aria-labelledby="map-title map-desc">
         <title id="map-title">{mapCopy.title}</title>
         <desc id="map-desc">{mapCopy.description}</desc>
 
         <rect className="ocean" x="20" y="24" width="860" height="560" rx="42" />
-
-        {shapes.map((shape) => {
-          const continent = getContinent(shape.id)
-          const isSelected = selectedId === shape.id
+        {projectedCountries.map((country) => {
+          const continent = continents.find((item) => item.id === country.continentId)!
+          const countryName = getCountryName(country.numericId, language)
+          const isSelected = mode === 'countries'
+            ? selectedCountryKey === country.key
+            : selectedId === country.continentId
 
           return (
-            <g key={shape.id} className={isSelected ? 'continent-group selected' : 'continent-group'}>
-              {isSelected && <path className="continent-glow" d={shape.d} />}
-              <path
-                className="continent-shape"
-                d={shape.d}
-                fill={continent.color}
-                role="button"
-                tabIndex={0}
-                aria-label={continent.names[language]}
-                onClick={() => onSelect(continent)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault()
-                    onSelect(continent)
-                  }
-                }}
-              />
-            </g>
+            <path
+              key={country.key}
+              className={isSelected ? 'continent-shape selected' : 'continent-shape'}
+              d={country.path}
+              fill={continent.color}
+              role="button"
+              tabIndex={0}
+              aria-label={mode === 'countries' ? countryName : continent.names[language]}
+              onClick={() => mode === 'countries' ? onSelectCountry(country.key, countryName) : onSelect(continent)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault()
+                  if (mode === 'countries') onSelectCountry(country.key, countryName)
+                  else onSelect(continent)
+                }
+              }}
+            />
           )
         })}
       </svg>

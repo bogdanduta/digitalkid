@@ -2,8 +2,7 @@
   position: relative;
   min-height: 100svh;
   display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 20px;
+  grid-template-rows: 1fr;
   padding: 28px;
 }
 
@@ -51,6 +50,40 @@
   background: #ffffff;
 }
 
+.mode-switcher {
+  position: absolute;
+  right: 28px;
+  bottom: 28px;
+  z-index: 2;
+  display: flex;
+  gap: 6px;
+  padding: 5px;
+  border: 3px solid #ffffff;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 8px 18px rgba(42, 76, 62, 0.12);
+}
+
+.mode-button {
+  min-height: 36px;
+  padding: 5px 10px;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  color: #385151;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.mode-button:hover,
+.mode-button:focus-visible,
+.mode-button.active {
+  border-color: #18333a;
+  outline: none;
+  background: #ffffff;
+}
+
 .flag {
   display: block;
   width: 32px;
@@ -80,8 +113,8 @@
 }
 
 .world-map {
-  width: min(100%, 980px);
-  max-height: 64svh;
+  width: min(100%, 1240px);
+  max-height: calc(100svh - 56px);
   filter: drop-shadow(0 18px 35px rgba(30, 80, 90, 0.18));
 }
 
@@ -100,14 +133,20 @@
   cursor: pointer;
   outline: none;
   stroke: #ffffff;
-  stroke-width: 8;
+  stroke-width: 1.5;
   stroke-linejoin: round;
+  fill-opacity: 0.9;
   transition:
     filter 180ms ease,
     opacity 180ms ease,
     transform 180ms ease;
   transform-box: fill-box;
   transform-origin: center;
+}
+
+.fidelity-high .continent-shape {
+  stroke-width: 4;
+  stroke-linejoin: miter;
 }
 
 .continent-shape:hover,
@@ -121,7 +160,7 @@
   outline: none;
 }
 
-.continent-group.selected .continent-shape {
+.continent-shape.selected {
   animation: happy-pop 520ms ease;
   filter: saturate(1.2) drop-shadow(0 14px 16px rgba(26, 68, 78, 0.25));
 }
@@ -185,13 +224,17 @@
 
 @media (max-width: 720px) {
   .app-shell {
-    gap: 14px;
     padding: 18px 12px;
   }
 
   .language-switcher {
     top: 12px;
     right: 12px;
+  }
+
+  .mode-switcher {
+    right: 12px;
+    bottom: 12px;
   }
 
   .language-button {
@@ -211,7 +254,7 @@
   }
 
   .world-map {
-    max-height: 58svh;
+    max-height: calc(100svh - 36px);
   }
 
   .selected-panel {

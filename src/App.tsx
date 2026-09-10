@@ -1,17 +1,19 @@
 import { useState } from 'react'
 import './App.css'
-import { WorldMap } from './components/WorldMap'
+import { WorldMap, type MapMode } from './components/WorldMap'
 import { continents, type Continent } from './data/continents'
-import { type Language, playContinentName } from './lib/audio'
+import { type Language, playContinentName, playCountryName } from './lib/audio'
 
 const copy = {
-  ro: { eyebrow: 'Hai sa invatam lumea', title: 'Atinge un continent', selected: 'Ai ales', switchLabel: 'Alege limba' },
-  en: { eyebrow: "Let's learn about the world", title: 'Touch a continent', selected: 'You chose', switchLabel: 'Choose language' },
-  es: { eyebrow: 'Aprendamos sobre el mundo', title: 'Toca un continente', selected: 'Has elegido', switchLabel: 'Elige el idioma' },
+  ro: { switchLabel: 'Alege limba', mapMode: 'Alege ce invatam', continents: 'Continente', countries: 'Tari' },
+  en: { switchLabel: 'Choose language', mapMode: 'Choose what to learn', continents: 'Continents', countries: 'Countries' },
+  es: { switchLabel: 'Elige el idioma', mapMode: 'Elige qué aprender', continents: 'Continentes', countries: 'Países' },
 } satisfies Record<Language, Record<string, string>>
 
 function App() {
   const [selectedContinent, setSelectedContinent] = useState<Continent>(continents[0])
+  const [selectedCountryKey, setSelectedCountryKey] = useState<string>()
+  const [mode, setMode] = useState<MapMode>('continents')
   const [language, setLanguage] = useState<Language>('ro')
 
   const currentCopy = copy[language]
@@ -24,6 +26,11 @@ function App() {
   const handleLanguageChange = (nextLanguage: Language) => {
     setLanguage(nextLanguage)
     void playContinentName(selectedContinent, nextLanguage)
+  }
+
+  const handleCountrySelect = (countryKey: string, name: string) => {
+    setSelectedCountryKey(countryKey)
+    playCountryName(name, language)
   }
 
   return (
@@ -58,17 +65,23 @@ function App() {
         </button>
       </div>
 
-      <section className="intro" aria-labelledby="page-title">
-        <p className="eyebrow">{currentCopy.eyebrow}</p>
-        <h1 id="page-title">{currentCopy.title}</h1>
-      </section>
+      <div className="mode-switcher" role="group" aria-label={currentCopy.mapMode}>
+        <button className={mode === 'continents' ? 'mode-button active' : 'mode-button'} type="button" aria-pressed={mode === 'continents'} onClick={() => setMode('continents')}>
+          {currentCopy.continents}
+        </button>
+        <button className={mode === 'countries' ? 'mode-button active' : 'mode-button'} type="button" aria-pressed={mode === 'countries'} onClick={() => setMode('countries')}>
+          {currentCopy.countries}
+        </button>
+      </div>
 
-      <WorldMap selectedId={selectedContinent.id} language={language} onSelect={handleContinentSelect} />
-
-      <section className="selected-panel" aria-live="polite">
-        <span className="selected-label">{currentCopy.selected}</span>
-        <strong style={{ color: selectedContinent.color }}>{selectedContinent.names[language]}</strong>
-      </section>
+      <WorldMap
+        selectedId={selectedContinent.id}
+        selectedCountryKey={selectedCountryKey}
+        mode={mode}
+        language={language}
+        onSelect={handleContinentSelect}
+        onSelectCountry={handleCountrySelect}
+      />
     </main>
   )
 }
