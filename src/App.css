@@ -1,9 +1,62 @@
 .app-shell {
+  position: relative;
   min-height: 100svh;
   display: grid;
   grid-template-rows: auto 1fr auto;
   gap: 20px;
   padding: 28px;
+}
+
+.language-switcher {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  z-index: 2;
+  display: flex;
+  gap: 6px;
+  padding: 5px;
+  border: 3px solid #ffffff;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 8px 18px rgba(42, 76, 62, 0.12);
+}
+
+.language-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 64px;
+  min-height: 42px;
+  justify-content: center;
+  padding: 5px 9px;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  color: #385151;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 900;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.language-button:hover,
+.language-button:focus-visible {
+  border-color: #8ecfcb;
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.language-button.active {
+  border-color: #18333a;
+  background: #ffffff;
+}
+
+.language-button span:first-child {
+  font-size: 24px;
+  line-height: 1;
 }
 
 .intro {
@@ -131,6 +184,22 @@
   .app-shell {
     gap: 14px;
     padding: 18px 12px;
+  }
+
+  .language-switcher {
+    top: 12px;
+    right: 12px;
+  }
+
+  .language-button {
+    min-width: 48px;
+    min-height: 36px;
+    padding: 4px 6px;
+    font-size: 12px;
+  }
+
+  .language-button span:first-child {
+    font-size: 20px;
   }
 
   .eyebrow {

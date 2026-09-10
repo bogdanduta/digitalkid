@@ -9,52 +9,79 @@ export type ContinentId =
 
 export type Continent = {
   id: ContinentId
-  nameRo: string
+  names: {
+    ro: string
+    en: string
+  }
+  audioPaths: {
+    ro: string
+    en: string
+  }
   color: string
-  audioPath: string
 }
 
 export const continents: Continent[] = [
   {
     id: 'africa',
-    nameRo: 'Africa',
+    names: { ro: 'Africa', en: 'Africa' },
+    audioPaths: {
+      ro: '/audio/continents/africa.mp3',
+      en: '/audio/continents/en/africa.mp3',
+    },
     color: '#f06f4f',
-    audioPath: '/audio/continents/africa.mp3',
   },
   {
     id: 'europe',
-    nameRo: 'Europa',
+    names: { ro: 'Europa', en: 'Europe' },
+    audioPaths: {
+      ro: '/audio/continents/europa.mp3',
+      en: '/audio/continents/en/europe.mp3',
+    },
     color: '#4f8df0',
-    audioPath: '/audio/continents/europa.mp3',
   },
   {
     id: 'asia',
-    nameRo: 'Asia',
+    names: { ro: 'Asia', en: 'Asia' },
+    audioPaths: {
+      ro: '/audio/continents/asia.mp3',
+      en: '/audio/continents/en/asia.mp3',
+    },
     color: '#f5bf3d',
-    audioPath: '/audio/continents/asia.mp3',
   },
   {
     id: 'north-america',
-    nameRo: 'America de Nord',
+    names: { ro: 'America de Nord', en: 'North America' },
+    audioPaths: {
+      ro: '/audio/continents/america-de-nord.mp3',
+      en: '/audio/continents/en/north-america.mp3',
+    },
     color: '#40a66f',
-    audioPath: '/audio/continents/america-de-nord.mp3',
   },
   {
     id: 'south-america',
-    nameRo: 'America de Sud',
+    names: { ro: 'America de Sud', en: 'South America' },
+    audioPaths: {
+      ro: '/audio/continents/america-de-sud.mp3',
+      en: '/audio/continents/en/south-america.mp3',
+    },
     color: '#d85b9f',
-    audioPath: '/audio/continents/america-de-sud.mp3',
   },
   {
     id: 'australia',
-    nameRo: 'Australia',
+    names: { ro: 'Australia', en: 'Australia' },
+    audioPaths: {
+      ro: '/audio/continents/australia.mp3',
+      en: '/audio/continents/en/australia.mp3',
+    },
     color: '#26a7a1',
-    audioPath: '/audio/continents/australia.mp3',
   },
   {
     id: 'antarctica',
-    nameRo: 'Antarctica',
+    names: { ro: 'Antarctica', en: 'Antarctica' },
+    audioPaths: {
+      ro: '/audio/continents/antarctica.mp3',
+      en: '/audio/continents/en/antarctica.mp3',
+    },
     color: '#8fb9d8',
-    audioPath: '/audio/continents/antarctica.mp3',
   },
 ]

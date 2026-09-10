@@ -2,28 +2,64 @@ import { useState } from 'react'
 import './App.css'
 import { WorldMap } from './components/WorldMap'
 import { continents, type Continent } from './data/continents'
-import { playContinentName } from './lib/audio'
+import { type Language, playContinentName } from './lib/audio'
+
+const copy = {
+  ro: { eyebrow: 'Hai sa invatam lumea', title: 'Atinge un continent', selected: 'Ai ales', switchLabel: 'Alege limba' },
+  en: { eyebrow: "Let's learn about the world", title: 'Touch a continent', selected: 'You chose', switchLabel: 'Choose language' },
+} satisfies Record<Language, Record<string, string>>
 
 function App() {
   const [selectedContinent, setSelectedContinent] = useState<Continent>(continents[0])
+  const [language, setLanguage] = useState<Language>('ro')
+
+  const currentCopy = copy[language]
 
   const handleContinentSelect = (continent: Continent) => {
     setSelectedContinent(continent)
-    void playContinentName(continent)
+    void playContinentName(continent, language)
+  }
+
+  const handleLanguageChange = (nextLanguage: Language) => {
+    setLanguage(nextLanguage)
+    void playContinentName(selectedContinent, nextLanguage)
   }
 
   return (
     <main className="app-shell">
+      <div className="language-switcher" role="group" aria-label={currentCopy.switchLabel}>
+        <button
+          className={language === 'ro' ? 'language-button active' : 'language-button'}
+          type="button"
+          aria-label="Romana"
+          aria-pressed={language === 'ro'}
+          onClick={() => handleLanguageChange('ro')}
+        >
+          <span aria-hidden="true">🇷🇴</span>
+          <span>RO</span>
+        </button>
+        <button
+          className={language === 'en' ? 'language-button active' : 'language-button'}
+          type="button"
+          aria-label="English"
+          aria-pressed={language === 'en'}
+          onClick={() => handleLanguageChange('en')}
+        >
+          <span aria-hidden="true">🇬🇧</span>
+          <span>EN</span>
+        </button>
+      </div>
+
       <section className="intro" aria-labelledby="page-title">
-        <p className="eyebrow">Hai sa invatam lumea</p>
-        <h1 id="page-title">Atinge un continent</h1>
+        <p className="eyebrow">{currentCopy.eyebrow}</p>
+        <h1 id="page-title">{currentCopy.title}</h1>
       </section>
 
-      <WorldMap selectedId={selectedContinent.id} onSelect={handleContinentSelect} />
+      <WorldMap selectedId={selectedContinent.id} language={language} onSelect={handleContinentSelect} />
 
       <section className="selected-panel" aria-live="polite">
-        <span className="selected-label">Ai ales</span>
-        <strong style={{ color: selectedContinent.color }}>{selectedContinent.nameRo}</strong>
+        <span className="selected-label">{currentCopy.selected}</span>
+        <strong style={{ color: selectedContinent.color }}>{selectedContinent.names[language]}</strong>
       </section>
     </main>
   )

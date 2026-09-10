@@ -1,7 +1,9 @@
 import { continents, type Continent, type ContinentId } from '../data/continents'
+import type { Language } from '../lib/audio'
 
 type WorldMapProps = {
   selectedId: ContinentId
+  language: Language
   onSelect: (continent: Continent) => void
 }
 
@@ -43,12 +45,16 @@ const shapes: Shape[] = [
 
 const getContinent = (id: ContinentId) => continents.find((continent) => continent.id === id)!
 
-export function WorldMap({ selectedId, onSelect }: WorldMapProps) {
+export function WorldMap({ selectedId, language, onSelect }: WorldMapProps) {
+  const mapCopy = language === 'ro'
+    ? { label: 'Harta lumii cu continente', title: 'Harta lumii', description: 'Atinge un continent pentru a auzi numele lui in romana.' }
+    : { label: 'World map with continents', title: 'World map', description: 'Touch a continent to hear its name in English.' }
+
   return (
-    <section className="map-stage" aria-label="Harta lumii cu continente">
+    <section className="map-stage" aria-label={mapCopy.label}>
       <svg className="world-map" viewBox="0 0 900 620" role="img" aria-labelledby="map-title map-desc">
-        <title id="map-title">Harta lumii</title>
-        <desc id="map-desc">Atinge un continent pentru a auzi numele lui in romana.</desc>
+        <title id="map-title">{mapCopy.title}</title>
+        <desc id="map-desc">{mapCopy.description}</desc>
 
         <rect className="ocean" x="20" y="24" width="860" height="560" rx="42" />
 
@@ -65,7 +71,7 @@ export function WorldMap({ selectedId, onSelect }: WorldMapProps) {
                 fill={continent.color}
                 role="button"
                 tabIndex={0}
-                aria-label={continent.nameRo}
+                aria-label={continent.names[language]}
                 onClick={() => onSelect(continent)}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter' || event.key === ' ') {
