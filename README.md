@@ -17,6 +17,50 @@ The development server usually starts at `http://localhost:5173/`.
 npm run build
 ```
 
+## Deploy To Azure Static Web Apps
+
+The app is hosted in Azure Static Web Apps on the Free plan. The current deployment uses the `rg-digitalkid` resource group and the `digitalkid-web-bogdan` app.
+
+### Prerequisites
+
+- Azure CLI installed and authenticated with `az login`.
+- Node.js and npm installed.
+- An Azure subscription with permission to create resources.
+
+### First-Time Setup
+
+```powershell
+az login
+az account set --subscription "Visual Studio Professional Subscription"
+az group create --name rg-digitalkid --location westeurope
+az staticwebapp create --name digitalkid-web-bogdan --resource-group rg-digitalkid --location westeurope --sku Free
+```
+
+The resource group may already exist. In that case, skip `az group create`. Choose the existing Free plan when creating or configuring the Static Web App; do not create a paid App Service plan for this static Vite site.
+
+### Publish A Build
+
+```powershell
+npm install
+npm run build
+$token = az staticwebapp secrets list --name digitalkid-web-bogdan --resource-group rg-digitalkid --query properties.apiKey --output tsv
+npx --yes @azure/static-web-apps-cli deploy .\dist --deployment-token $token --env production
+```
+
+The deployment URL is shown by the final command. Verify it with a browser or:
+
+```powershell
+Invoke-WebRequest https://<your-static-app-hostname> -UseBasicParsing
+```
+
+The deployment CLI can leave a temporary `*-app.zip` file in the project root. Delete that generated file before restarting Vite if the local server reports `EBUSY` while watching files:
+
+```powershell
+Get-ChildItem -File -Filter '*-app.zip' | Remove-Item -Force
+```
+
+Never commit deployment tokens or Azure credentials. Keep the token in a local shell variable only.
+
 ## Audio Files
 
 The app looks for pre-generated Romanian audio files in `public/audio/continents/`:
