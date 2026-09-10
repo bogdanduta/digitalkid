@@ -35,8 +35,7 @@ function App() {
           aria-pressed={language === 'ro'}
           onClick={() => handleLanguageChange('ro')}
         >
-          <span aria-hidden="true">🇷🇴</span>
-          <span>RO</span>
+          <img className="flag" src="https://flagcdn.com/ro.svg" alt="" aria-hidden="true" />
         </button>
         <button
           className={language === 'en' ? 'language-button active' : 'language-button'}
@@ -45,8 +44,7 @@ function App() {
           aria-pressed={language === 'en'}
           onClick={() => handleLanguageChange('en')}
         >
-          <span aria-hidden="true">🇬🇧</span>
-          <span>EN</span>
+          <img className="flag" src="https://flagcdn.com/gb.svg" alt="" aria-hidden="true" />
         </button>
       </div>
 
