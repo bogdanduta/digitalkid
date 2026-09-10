@@ -17,6 +17,14 @@ $env:SPEECH_REGION = 'westeurope'
 npm run audio:generate:en
 ```
 
+Generate the Spanish files with:
+
+```powershell
+$env:SPEECH_KEY = 'your-key'
+$env:SPEECH_REGION = 'westeurope'
+npm run audio:generate:es
+```
+
 Replace `westeurope` with the region of the Azure Speech resource. The script
 generates these Romanian MP3 files in this directory:
 
@@ -29,8 +37,10 @@ generates these Romanian MP3 files in this directory:
 - `antarctica.mp3`
 
 The Romanian files are written to this directory and use the `ro-RO-AlinaNeural`
-voice. English files are written to `en/` and use the `en-US-AvaNeural` voice.
-Both languages use a slightly slower rate.
+voice. English files are written to `en/` and use the recommended female
+`en-US-JennyNeural` voice.
+Spanish files are written to `es/` and use the `es-ES-ElviraNeural` voice.
+All languages use a slightly slower rate.
 The Azure key is read only from the current process environment and is never
 written to the project.
 

@@ -48,7 +48,9 @@ const getContinent = (id: ContinentId) => continents.find((continent) => contine
 export function WorldMap({ selectedId, language, onSelect }: WorldMapProps) {
   const mapCopy = language === 'ro'
     ? { label: 'Harta lumii cu continente', title: 'Harta lumii', description: 'Atinge un continent pentru a auzi numele lui in romana.' }
-    : { label: 'World map with continents', title: 'World map', description: 'Touch a continent to hear its name in English.' }
+    : language === 'en'
+      ? { label: 'World map with continents', title: 'World map', description: 'Touch a continent to hear its name in English.' }
+      : { label: 'Mapa del mundo con continentes', title: 'Mapa del mundo', description: 'Toca un continente para escuchar su nombre en español.' }
 
   return (
     <section className="map-stage" aria-label={mapCopy.label}>

@@ -1,6 +1,6 @@
 import type { Continent } from '../data/continents'
 
-export type Language = 'ro' | 'en'
+export type Language = 'ro' | 'en' | 'es'
 
 let currentAudio: HTMLAudioElement | undefined
 
@@ -12,7 +12,7 @@ const speakWithBrowserVoice = (text: string, language: Language) => {
   window.speechSynthesis.cancel()
 
   const utterance = new SpeechSynthesisUtterance(text)
-  utterance.lang = language === 'ro' ? 'ro-RO' : 'en-US'
+  utterance.lang = language === 'ro' ? 'ro-RO' : language === 'en' ? 'en-US' : 'es-ES'
   utterance.rate = 0.85
   utterance.pitch = 1.1
 

@@ -7,6 +7,7 @@ import { type Language, playContinentName } from './lib/audio'
 const copy = {
   ro: { eyebrow: 'Hai sa invatam lumea', title: 'Atinge un continent', selected: 'Ai ales', switchLabel: 'Alege limba' },
   en: { eyebrow: "Let's learn about the world", title: 'Touch a continent', selected: 'You chose', switchLabel: 'Choose language' },
+  es: { eyebrow: 'Aprendamos sobre el mundo', title: 'Toca un continente', selected: 'Has elegido', switchLabel: 'Elige el idioma' },
 } satisfies Record<Language, Record<string, string>>
 
 function App() {
@@ -45,6 +46,15 @@ function App() {
           onClick={() => handleLanguageChange('en')}
         >
           <img className="flag" src="https://flagcdn.com/gb.svg" alt="" aria-hidden="true" />
+        </button>
+        <button
+          className={language === 'es' ? 'language-button active' : 'language-button'}
+          type="button"
+          aria-label="Español"
+          aria-pressed={language === 'es'}
+          onClick={() => handleLanguageChange('es')}
+        >
+          <img className="flag" src="https://flagcdn.com/es.svg" alt="" aria-hidden="true" />
         </button>
       </div>
 

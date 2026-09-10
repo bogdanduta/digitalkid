@@ -6,6 +6,7 @@
   "scripts": {
     "audio:generate": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/generate-continent-audio.ps1 -Language ro",
     "audio:generate:en": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/generate-continent-audio.ps1 -Language en",
+    "audio:generate:es": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/generate-continent-audio.ps1 -Language es",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",

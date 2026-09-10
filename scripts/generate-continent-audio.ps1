@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [ValidateSet('ro', 'en')]
+    [ValidateSet('ro', 'en', 'es')]
     [string]$Language = 'ro'
 )
 
@@ -38,12 +38,21 @@ $continentNames = [ordered]@{
         'australia.mp3'       = 'Australia'
         'antarctica.mp3'      = 'Antarctica'
     }
+    es = [ordered]@{
+        'africa.mp3'        = 'África'
+        'europe.mp3'        = 'Europa'
+        'asia.mp3'          = 'Asia'
+        'north-america.mp3' = 'América del Norte'
+        'south-america.mp3' = 'América del Sur'
+        'australia.mp3'     = 'Australia'
+        'antarctica.mp3'    = 'Antártida'
+    }
 }
 
 $continents = $continentNames[$Language]
-$voiceName = if ($Language -eq 'ro') { 'ro-RO-AlinaNeural' } else { 'en-US-AvaNeural' }
-$locale = if ($Language -eq 'ro') { 'ro-RO' } else { 'en-US' }
-$audioDirectory = if ($Language -eq 'ro') { '' } else { '\en' }
+$voiceName = if ($Language -eq 'ro') { 'ro-RO-AlinaNeural' } elseif ($Language -eq 'en') { 'en-US-JennyNeural' } else { 'es-ES-ElviraNeural' }
+$locale = if ($Language -eq 'ro') { 'ro-RO' } elseif ($Language -eq 'en') { 'en-US' } else { 'es-ES' }
+$audioDirectory = if ($Language -eq 'ro') { '' } else { "\$Language" }
 $outputDirectory = Join-Path $PSScriptRoot "..\public\audio\continents$audioDirectory"
 $outputDirectory = [System.IO.Path]::GetFullPath($outputDirectory)
 [System.IO.Directory]::CreateDirectory($outputDirectory) | Out-Null
@@ -66,7 +75,7 @@ foreach ($continent in $continents.GetEnumerator()) {
 "@
 
     $outputFile = Join-Path $outputDirectory $continent.Key
-    $temporaryFile = "$outputFile.download"
+    $temporaryFile = Join-Path ([System.IO.Path]::GetTempPath()) "digitalkid-$Language-$($continent.Key).download"
 
     try {
         Invoke-WebRequest `
